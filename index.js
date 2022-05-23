@@ -43,7 +43,11 @@ async function run() {
 
     app.get('/parts', async (req, res) => {
       const parts = await partsCollection.find().toArray()
-      console.log(parts)
+      res.send(parts)
+    })
+
+    app.get('/home/parts', async (req, res) => {
+      const parts = await partsCollection.find().limit(3).toArray() 
       res.send(parts)
     })
 
