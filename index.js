@@ -24,6 +24,7 @@ async function run() {
 
     const userCollection = client.db('facturer').collection('users');
     const partsCollection = client.db('facturer').collection('parts');
+    const orderCollection = client.db('facturer').collection('order');
 
 
 
@@ -56,11 +57,15 @@ async function run() {
       const id=req.params.id
       const query={_id:ObjectId(id)}
       const parts = await partsCollection.findOne(query)
-      
       res.send(parts)
     })
+    
 
-
+    app.post(`/order`, async (req, res) => {
+      const order=req.body
+      const placeOrder= await orderCollection.insertOne(order)
+      res.send(placeOrder)
+    })
 
 
   } finally {
