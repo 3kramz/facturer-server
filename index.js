@@ -48,22 +48,38 @@ async function run() {
     })
 
     app.get('/home/parts', async (req, res) => {
-      const parts = await partsCollection.find().limit(3).toArray() 
+      const parts = await partsCollection.find().limit(3).toArray()
       res.send(parts)
     })
-    
-    
-    app.get(`/part/:id`, async (req, res) => {
-      const id=req.params.id
-      const query={_id:ObjectId(id)}
-      const parts = await partsCollection.findOne(query)
-      res.send(parts)
-    })
-    
 
-    app.post(`/order`, async (req, res) => {
-      const order=req.body
-      const placeOrder= await orderCollection.insertOne(order)
+
+    app.get(`/part/:id`, async (req, res) => {
+      const id = req.params.id
+      const query = { _id: ObjectId(id) }
+      const part = await partsCollection.findOne(query)
+     
+      res.send(part)
+    })
+
+    app.post(`/order/:id`, async (req, res) => {
+      const id = req.params.id
+      const orderInfo = req.body
+      const placeOrder = await orderCollection.insertOne(orderInfo)
+     
+      const query = { _id: ObjectId(id) }
+      const part = await partsCollection.findOne(query)
+      const order = await orderCollection.findOne({productId:id})
+      
+
+      const options = { upsert: true };
+     
+      const updateDoc = {
+        $set: {
+          stock: `${part.stock - orderInfo.quantity}`
+        },
+      };
+      const result = await partsCollection.updateOne( { _id: ObjectId(id) }, updateDoc, options);
+
       res.send(placeOrder)
     })
 
