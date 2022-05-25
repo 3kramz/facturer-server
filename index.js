@@ -41,6 +41,13 @@ async function run() {
 
       res.send({ result, token })
     })
+   
+    app.get("/user/:email", async (req, res) => {
+      const email = req.params.email
+      const profile= await userCollection.findOne({email});
+      res.send(profile)
+    })
+
 
     app.get('/parts', async (req, res) => {
       const parts = await partsCollection.find().toArray()
