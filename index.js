@@ -91,6 +91,15 @@ async function run() {
     })
 
 
+    app.get("/order/:email", async (req, res) => {
+      const email = req.params.email
+
+      const order= await orderCollection.find({email}).toArray();
+      console.log(order)
+      res.send(order)
+    })
+
+
   } finally {
 
   }
