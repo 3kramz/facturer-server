@@ -75,8 +75,6 @@ async function run() {
      
       const query = { _id: ObjectId(id) }
       const part = await partsCollection.findOne(query)
-      const order = await orderCollection.findOne({productId:id})
-      
 
       const options = { upsert: true };
      
@@ -86,16 +84,25 @@ async function run() {
         },
       };
       const result = await partsCollection.updateOne( { _id: ObjectId(id) }, updateDoc, options);
-
       res.send(placeOrder)
+    })
+
+
+    app.put(`/review/:id`, async (req, res) => {
+      const id = req.params.id
+      const review = req.body
+      const options = { upsert: true };
+      const updateDoc = { $set: review,};
+
+      const result = await orderCollection.updateOne( {productId:id}, updateDoc, options)
+   
+      res.send(result)
     })
 
 
     app.get("/order/:email", async (req, res) => {
       const email = req.params.email
-
       const order= await orderCollection.find({email}).toArray();
-      console.log(order)
       res.send(order)
     })
 
