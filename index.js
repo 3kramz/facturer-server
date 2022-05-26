@@ -26,6 +26,18 @@ async function run() {
     const partsCollection = client.db('facturer').collection('parts');
     const orderCollection = client.db('facturer').collection('order');
 
+    const verifyAdmin = async (req, res, next) => {
+      const adminEmail = req.params.email
+
+      const admin = await userCollection.find({ email: adminEmail }).toArray()
+      if (admin[0].role === "Admin") {
+        next()
+      }
+      else {
+        return res.status(403).send({ message: 'forbidden' });
+      }
+    }
+
 
 
     app.put("/user/:email", async (req, res) => {
@@ -46,6 +58,11 @@ async function run() {
       const email = req.params.email
       const profile= await userCollection.findOne({email});
       res.send(profile)
+    })
+
+    app.get("/admin/:email", verifyAdmin, async (req, res) => {
+
+      res.send({ admin: true })
     })
 
 
