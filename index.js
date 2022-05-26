@@ -28,7 +28,6 @@ async function run() {
 
     const verifyAdmin = async (req, res, next) => {
       const adminEmail = req.params.email
-
       const admin = await userCollection.find({ email: adminEmail }).toArray()
       if (admin[0].role === "Admin") {
         next()
@@ -59,6 +58,24 @@ async function run() {
       const profile= await userCollection.findOne({email});
       res.send(profile)
     })
+
+
+    app.get("/users", async (req, res) => {
+      const users= await userCollection.find().toArray();
+      res.send(users)
+    })
+    
+    
+    app.put("/user/admin/:email", async (req, res) => {
+      const email = req.params.email
+      const filter = { email };
+      const updateDoc = {
+        $set: { role: "Admin" },
+      };
+      const result = await userCollection.updateOne(filter, updateDoc);
+      res.send(result)
+    })
+
 
     app.get("/admin/:email", verifyAdmin, async (req, res) => {
 
