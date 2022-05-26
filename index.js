@@ -103,6 +103,15 @@ async function run() {
       res.send(part)
     })
 
+
+
+    app.get('/order', async (req, res) => {
+      const orders = await orderCollection.find().toArray()
+      res.send(orders)
+    })
+
+
+
     app.post(`/order/:id`, async (req, res) => {
       const id = req.params.id
       const orderInfo = req.body
