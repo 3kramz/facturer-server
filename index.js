@@ -71,6 +71,15 @@ async function run() {
       res.send(parts)
     })
 
+     app.post(`/part`, async (req, res) => {
+      
+      const orderInfo = req.body
+      
+      const result = await partsCollection.insertOne(orderInfo);
+      res.send(result)
+    })
+
+
     app.get('/home/parts', async (req, res) => {
       const parts = await partsCollection.find().limit(3).toArray()
       res.send(parts)
