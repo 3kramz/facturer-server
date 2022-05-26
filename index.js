@@ -72,10 +72,19 @@ async function run() {
     })
 
      app.post(`/part`, async (req, res) => {
-      
       const orderInfo = req.body
-      
       const result = await partsCollection.insertOne(orderInfo);
+      res.send(result)
+    })
+
+     app.put(`/update/:id`, async (req, res) => {
+       const id= req.params.id
+      const info = req.body
+      const options = { upsert: true };
+      const updateDoc = { $set: info,};
+
+      const result = await partsCollection.updateOne( {_id:ObjectId(id)}, updateDoc, options)
+
       res.send(result)
     })
 
