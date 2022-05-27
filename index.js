@@ -143,6 +143,11 @@ async function run() {
       res.send(orders)
     })
 
+    app.get('/home/order', async (req, res) => {
+      const orders = await orderCollection.find().limit(3).toArray()
+      res.send(orders)
+    })
+
 
 
     app.post(`/order/:id`,verifyJWT, async (req, res) => {
@@ -179,6 +184,14 @@ async function run() {
     app.get("/order/:email",verifyJWT, async (req, res) => {
       const email = req.params.email
       const order= await orderCollection.find({email}).toArray();
+      res.send(order)
+    })
+
+
+    app.delete("/order/:id", async (req, res) => {
+      const id= req.params.id
+      const order= await orderCollection.deleteOne({productId: id})
+
       res.send(order)
     })
 
